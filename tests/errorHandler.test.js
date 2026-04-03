@@ -1,4 +1,10 @@
-const { AppError, notFound, forbidden, conflict, badRequest } = require("../src/middleware/errorHandler");
+const {
+  AppError,
+  notFound,
+  forbidden,
+  conflict,
+  badRequest,
+} = require("../src/middleware/errorHandler");
 
 describe("AppError", () => {
   test("creates error with statusCode and code", () => {
@@ -38,7 +44,7 @@ describe("errorHandler middleware", () => {
   const mockRes = () => {
     const res = {};
     res.status = jest.fn().mockReturnValue(res);
-    res.json   = jest.fn().mockReturnValue(res);
+    res.json = jest.fn().mockReturnValue(res);
     return res;
   };
 
@@ -47,7 +53,10 @@ describe("errorHandler middleware", () => {
     const res = mockRes();
     errorHandler(err, {}, res, () => {});
     expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({ error: "Not found", code: "NOT_FOUND" });
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Not found",
+      code: "NOT_FOUND",
+    });
   });
 
   test("returns 500 for non-operational errors", () => {
@@ -55,7 +64,10 @@ describe("errorHandler middleware", () => {
     const res = mockRes();
     errorHandler(err, {}, res, () => {});
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ error: "Internal server error", code: "SERVER_ERROR" });
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Internal server error",
+      code: "SERVER_ERROR",
+    });
   });
 
   test("handles pg unique constraint (23505) as 409", () => {

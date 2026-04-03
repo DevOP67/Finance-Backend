@@ -27,28 +27,26 @@ function errorHandler(err, req, res, next) {
   // eslint-disable-line no-unused-vars
   // Postgres unique-constraint violation
   if (err.code === "23505") {
-    return res
-      .status(409)
-      .json({
-        error: "A record with that value already exists",
-        code: "CONFLICT",
-      });
+    return res.status(409).json({
+      error: "A record with that value already exists",
+      code: "CONFLICT",
+    });
   }
   // Postgres foreign-key violation
   if (err.code === "23503") {
-    return res
-      .status(400)
-      .json({
-        error: "Referenced resource does not exist",
-        code: "BAD_REQUEST",
-      });
+    return res.status(400).json({
+      error: "Referenced resource does not exist",
+      code: "BAD_REQUEST",
+    });
   }
 
   const status = err.statusCode || 500;
   const message = err.isOperational ? err.message : "Internal server error";
   const code = err.code || "SERVER_ERROR";
 
-  if (!err.isOperational) console.error("[Unhandled]", err);
+  if (!err.isOperational && process.env.NODE_ENV !== "test") {
+    console.error("[Unhandled]", err);
+  }
 
   res.status(status).json({ error: message, code });
 }
